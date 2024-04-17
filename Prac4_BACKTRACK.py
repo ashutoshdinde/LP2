@@ -1,56 +1,46 @@
-def is_safe(board, row, col, N):
-    # Check if there is a queen in the current row on the left side
-    for i in range(col):
-        if board[row][i] == 1:
-            return False
+class NQueensProblem:
+    def __init__(self, n):
+        self.queens = [0] * n
+        self.numSolutions = 0
 
-    # Check upper diagonal on left side
-    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
+    def solve(self):
+        self.solve_helper(0)
 
-    # Check lower diagonal on left side
-    for i, j in zip(range(row, N, 1), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
+    def solve_helper(self, row):
+        if row == len(self.queens):
+            self.numSolutions += 1
+            self.print_solution()
+        else:
+            for col in range(len(self.queens)):
+                self.queens[row] = col
+                if self.is_valid(row, col):
+                    self.solve_helper(row + 1)
 
-    return True
-
-
-def solve_n_queens_util(board, col, N):
-    if col >= N:
+    def is_valid(self, row, col):
+        for i in range(row):
+            diff = abs(self.queens[i] - col)
+            if diff == 0 or diff == row - i:
+                return False
         return True
 
-    for i in range(N):
-        if is_safe(board, i, col, N):
-            board[i][col] = 1
+    def print_solution(self):
+        if self.numSolutions == 1:
+            print("Solution: ", end="")
+            for i in range(len(self.queens)):
+                print(self.queens[i], end=" ")
+            print()
+            print("The Matrix Representation:")
+            arr = [[0] * len(self.queens) for _ in range(len(self.queens))]
+            for i in range(len(self.queens)):
+                for j in range(len(self.queens)):
+                    if j == self.queens[i]:
+                        arr[i][j] = 1
+            for i in range(len(self.queens)):
+                for j in range(len(self.queens)):
+                    print(arr[i][j], end=" ")
+                print()
 
-            if solve_n_queens_util(board, col + 1, N):
-                return True
-
-            board[i][col] = 0
-
-    return False
-
-
-def solve_n_queens(N):
-    board = [[0 for _ in range(N)] for _ in range(N)]
-
-    if not solve_n_queens_util(board, 0, N):
-        print("Solution does not exist")
-        return False
-
-    print_board(board)
-    return True
-
-
-def print_board(board):
-    for row in board:
-        print(" ".join(map(str, row)))
-    print()
-
-
-# Usage
-N = 8
-solve_n_queens(N)
-
+if __name__ == "__main__":
+    n = int(input("Enter N Queens Problem: "))
+    NQueensProblem = NQueensProblem(n)
+    NQueensProblem.solve()
