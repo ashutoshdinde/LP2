@@ -1,40 +1,94 @@
-import random
+import streamlit as st
 
-responses = {
-    "hi": "Hello, welcome to Enterprise Bot! How can I assist you today?",
-    "services": "We offer the following services:\n- IT Support\n- Software Development\n- Cloud Computing\n- Data Analytics\nWhich service are you interested in?",
-    "it support": "Great, let me transfer you to our IT support team.",
-    "software development": "Great, let me transfer you to our software development team.",
-    "cloud computing": "Great, let me transfer you to our cloud computing team.",
-    "data analytics": "Great, let me transfer you to our data analytics team.",
-    "default": "I'm sorry, I didn't understand. Can you please rephrase?"
+bot_name = "College Buddy"
+
+knowledge_base = {
+
+    "what is your name?" : [
+        f"My name is {bot_name}! \n Happy to help you out with your College enquiries!"
+    ],
+
+    "hello": [
+        f"Hello my name is {bot_name}! \n Happy to help you out with your College enquiries!"
+    ],
+
+    "what are the best colleges from pune?": [
+        "COEP",
+        "PICT",
+        "VIT",
+        "CUMMINS",
+        "PCCOE"
+    ],
+
+    "which are  the best engineering branches?": [
+        "Computer Engineering",
+        "IT Engineering",
+        "ENTC Engineering"
+    ],
+
+    "what are the top branch cut-offs for coep?" : [
+        "Computer Engineering : 99.8 percentile",
+        "Does not have IT branch",
+        "ENTC Engineering: 99.2 percentile",
+    ],   
+
+    "what are the top branch cut-offs for pict?" : [
+        "Computer Engineering : 99.4 percentile",
+        "IT Engineering : 98.6 percentile",
+        "ENTC Engineering: 97.2 percentile",
+    ],  
+
+    "what are the top branch cut-offs for vit?" : [
+        "Computer Engineering : 99.8 percentile",
+        "IT Engineering: 97.1 percentile",
+        "ENTC Engineering: 96.2 percentile",
+    ],    
+
+    "what are the top branch cut-offs for cummins?" : [
+        "Computer Engineering : 99.8 percentile",
+        "Does not have IT branch",
+        "ENTC Engineering: 99.2",
+    ],  
+
+    "what are the top branch cut-offs for pccoe?" : [
+        "Computer Engineering : 99.8 percentile",
+        "Does not have IT branch",
+        "ENTC Engineering: 99.2",
+    ], 
+
+    "When do college admissions start?": [
+        "Admissions generally start around August",
+    ],
+   
 }
 
-def get_response(user_input):
-    user_input = user_input.lower()
-    
-    if "it support" in user_input:
-        return responses["it support"]
-    elif "software development" in user_input:
-        return responses["software development"]
-    elif "cloud computing" in user_input:
-        return responses["cloud computing"]
-    elif "data analytics" in user_input:
-        return responses["data analytics"]
-    elif "services" in user_input:
-        return responses["services"]
-    elif "hi" in user_input:
-        return responses["hi"]
-    elif "bye" in user_input:
-        return "Thank you for contacting Enterprise Bot. Have a nice day!"
-    else:
-        return responses["default"]
+st.header("College Enquiry Rule Based Chatbot")
 
-print("Hello, welcome to Enterprise Bot! How can I assist you today?")
-while True:
-    user_input = input("You: ")
-    if "bye" in user_input:
-        print(get_response(user_input))
-        break
+def respond(input: str):
+    if (input in knowledge_base):
+        print(input)
+        values = knowledge_base[input]
+        for value in values:
+            st.write(value)
     else:
-        print(get_response(user_input))
+        print(input)
+        key = input
+        st.write("Question is not present in the knowledge base!\nCould you please enter the appropriate answer for the question below-")
+        answer = st.text_input("Answer")
+        add = st.button("Add answer")
+        if (add):
+            knowledge_base[key] = [answer]
+
+if __name__ == "__main__":
+    input = st.text_input("Enter a query here-")
+    input = input.lower()
+    col1, col2 = st.columns([1,0.1])
+    with col1:
+        ask = st.button("Ask")
+    with col2:
+        quit = st.button("Quit")
+    if (ask):
+        respond(input)
+    if (quit):
+        st.write("Thank you for using the Chatbot")
+    
