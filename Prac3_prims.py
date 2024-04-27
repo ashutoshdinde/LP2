@@ -2,12 +2,12 @@ INF = 9999999
 # number of vertices in graph
 N = 5
 #creating graph by adjacency matrix method
-  
-G = [[0, 2, 0, 6, 0],
-     [2, 0, 3, 8, 5],
-     [0, 3, 0, 0, 7],
-     [6, 8, 0, 0, 9],
-     [0, 5, 7, 9, 0]]
+        
+G = [ [0, 4, 0, 10, 0],
+      [4, 0, 1, 2, 0],
+      [0, 1, 0, 6, 0],
+      [10, 2, 6, 0, 3],
+      [0, 0, 0, 3, 0]]
 
 selected_node = [0, 0, 0, 0, 0]
 
@@ -33,7 +33,7 @@ while (no_edge < N - 1):
                         b = n
                     
     print(str(a) + "-" + str(b) + "  :   "+ str(G[a][b]))
-    min_weight+= n 
+    min_weight+= minimum 
    
     selected_node[b] = True
     no_edge += 1
