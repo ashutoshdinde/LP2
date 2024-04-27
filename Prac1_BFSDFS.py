@@ -1,6 +1,5 @@
 from collections import deque
 
-
 class Graph:
     def __init__(self, v):
         self.V = v
@@ -54,4 +53,5 @@ print("DFS of Graph")
 g.DFS(start)
 print()
 print("BFS of Graph")
-g.BFS(start)
+g.BFS(start) 
+

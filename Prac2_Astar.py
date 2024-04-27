@@ -1,120 +1,70 @@
-class Node():
-    def __init__(self, data, level, fval):
-        """ Initialize the node with the data, level of the node and the calculated fvalue """
-        self.data = data
-        self.level = level
-        self.fval = fval
+import heapq
 
-    def generate_child(self):
-        """ Generate child nodes from the given node by moving the blank space
-            either in the four directions {up, down, left, right} """
-        x, y = self.find(self.data, '_')
-        """ val_list contains position values for moving the blank space in either of
-            the 4 directions [up, down, left, right] respectively. """
-        val_list = [[x, y-1], [x, y+1], [x-1, y], [x+1, y]]
-        children = []
-        for i in val_list:
-            child = self.shuffle(self.data, x, y, i[0], i[1])
-            if child is not None:
-                child_node = Node(child, self.level + 1, 0)
-                children.append(child_node)
-        return children
+# Define the goal state
+goal_state = [1,2,3,8,0,4,7,6,5]
 
-    def shuffle(self, puz, x1, y1, x2, y2):
-        """ Move the blank space in the given direction and if the position values are out
-            of limits, then return None """
-        if 0 <= x2 < len(self.data) and 0 <= y2 < len(self.data):
-            temp_puz = self.copy(puz)
-            temp = temp_puz[x2][y2]
-            temp_puz[x2][y2] = temp_puz[x1][y1]
-            temp_puz[x1][y1] = temp
-            return temp_puz
-        else:
-            return None
+# Define the function to calculate the Manhattan distance heuristic
+def manhattan_distance(state):
+    distance = 0
+    for i in range(9):
+        if state[i] != 0:
+            goal_x, goal_y = divmod(goal_state.index(state[i]), 3)
+            current_x, current_y = divmod(i, 3)
+            distance += abs(goal_x - current_x) + abs(goal_y - current_y)
+    return distance
 
-    def copy(self, root):
-        """ Copy function to create a similar matrix of the given node"""
-        temp = []
-        for i in root:
-            t = []
-            for j in i:
-                t.append(j)
-            temp.append(t)
-        return temp
+# Define the function to generate the next possible states
+def generate_next_states(state):
+    next_states = []
+    zero_index = state.index(0)
+    if zero_index > 2:
+        new_state = state[:]
+        new_state[zero_index], new_state[zero_index - 3] = new_state[zero_index - 3], new_state[zero_index]
+        next_states.append(new_state)
+    if zero_index < 6:
+        new_state = state[:]
+        new_state[zero_index], new_state[zero_index + 3] = new_state[zero_index + 3], new_state[zero_index]
+        next_states.append(new_state)
+    if zero_index % 3 != 0:
+        new_state = state[:]
+        new_state[zero_index], new_state[zero_index - 1] = new_state[zero_index - 1], new_state[zero_index]
+        next_states.append(new_state)
+    if zero_index % 3 != 2:
+        new_state = state[:]
+        new_state[zero_index], new_state[zero_index + 1] = new_state[zero_index + 1], new_state[zero_index]
+        next_states.append(new_state)
+    return next_states
 
-    def find(self, puz, x):
-        """ Specifically used to find the position of the blank space """
-        for i in range(0, len(self.data)):
-            for j in range(0, len(self.data)):
-                if puz[i][j] == x:
-                    return i, j
+# Define the function to print the puzzle state
+def print_puzzle(state):
+    for i in range(0, 9, 3):
+        print(f"{state[i]} {state[i+1]} {state[i+2]}")
+    print()
 
+# Define the A* algorithm
+def solve_8_puzzle(initial_state):
+    frontier = [(manhattan_distance(initial_state), initial_state, 0)]
+    explored = set()
+    while frontier:
+        _, state, cost = heapq.heappop(frontier)
+        if state == goal_state:
+            print("Solution found!")
+            print_puzzle(state)
+            return cost
+        explored.add(tuple(state))
+        print(f"Current state (cost = {cost}):")
+        print_puzzle(state)
+        for next_state in generate_next_states(state):
+            if tuple(next_state) not in explored:
+                heapq.heappush(frontier, (manhattan_distance(next_state) + cost + 1, next_state, cost + 1))
+    return None
 
-class Puzzle:
-    def __init__(self, size):
-        """ Initialize the puzzle size by the specified size, open and closed lists to empty """
-        self.n = size
-        self.open = []
-        self.closed = []
-
-    def accept(self):
-        """ Accepts the puzzle from the user """
-        puz = []
-        for i in range(0, self.n):
-            temp = input().split(" ")
-            puz.append(temp)
-        return puz
-
-    def f(self, start, goal):
-        """ Heuristic Function to calculate heuristic value f(x) = h(x) + g(x) """
-        return self.h(start.data, goal) + start.level
-
-    def h(self, start, goal):
-        temp = 0
-        for i in range(0, self.n):
-         for j in range(0, self.n):
-            print(f"i: {i}, j: {j}")
-            print(f"start: {start}")
-            print(f"goal: {goal}")
-            if start[i][j] != goal[i][j] and start[i][j] != '_':
-                temp += 1
-         return temp
-
-
-    def process(self):
-        """ Accept Start and Goal Puzzle state"""
-        print("Enter the start state matrix \n")
-        start = self.accept()
-        print("Enter the goal state matrix \n")
-        goal = self.accept()
-
-        start = Node(start, 0, 0)
-        start.fval = self.f(start, goal)
-        """ Put the start node in the open list"""
-        self.open.append(start)
-        print("\n\n")
-        while True:
-            cur = self.open[0]
-            print("")
-            print("  | ")
-            print("  | ")
-            print(" \\\'/ \n")
-            for i in cur.data:
-                for j in i:
-                    print(j, end=" ")
-                print("")
-            """ If the difference between the current and goal node is 0, we have reached the goal node"""
-            if self.h(cur.data, goal) == 0:
-                break
-            for i in cur.generate_child():
-                i.fval = self.f(i, goal)
-                self.open.append(i)
-            self.closed.append(cur)
-            del self.open[0]
-
-            """ sort the open list based on f value """
-            self.open.sort(key=lambda x: x.fval, reverse=False)
-
-
-puz = Puzzle(3)
-puz.process()
+# Example usage
+initial_state = [8,3,5,4,1,6,2,7,0]
+print("Initial state:")
+print_puzzle(initial_state)
+solution_cost = solve_8_puzzle(initial_state)
+if solution_cost is not None:
+    print(f"Minimum number of moves: {solution_cost}")
+else:
+    print("No solution found")
