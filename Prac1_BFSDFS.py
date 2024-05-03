@@ -1,5 +1,3 @@
-from collections import deque
-
 class Graph:
     def __init__(self, v):
         self.V = v
@@ -39,7 +37,7 @@ class Graph:
 n = int(input("Enter the size of the graph: "))
 g = Graph(n)
 
-size = int(input("Enter the size of input: "))
+size = int(input("Enter the size of input(edges): "))
 for i in range(size):
     j, k = map(int, input(f"Enter edges {i + 1} of graph: ").split())
 
@@ -54,4 +52,3 @@ g.DFS(start)
 print()
 print("BFS of Graph")
 g.BFS(start) 
-

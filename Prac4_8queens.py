@@ -56,7 +56,7 @@ class NQueens:
 
 
 if __name__ == "__main__":
-    n_queen_solver = NQueens(6)  # Solve for 8 queens
+    n_queen_solver = NQueens(4)  # Solve for 8 queens
 
     print("Solutions using Backtracking:")
     n_queen_solver.find_solutions_backtracking()
