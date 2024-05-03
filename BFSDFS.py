@@ -7,16 +7,14 @@ class Graph:
     def add_edge(self, v, w):
         self.adj[v].append(w)
 
-    def dfs(self, vertex):
-        visited = set()
-        stack = [vertex]
+    def dfs_recursive(self, vertex, visited=set()):
+        visited.add(vertex)
+        print(vertex, end=" ")
 
-        while stack:
-            v = stack.pop()
-            if v not in visited:
-                print(v, end=" ")
-                visited.add(v)
-                stack.extend(reversed(self.adj[v]))
+        for neighbor in self.adj[vertex]:
+            if neighbor not in visited:
+                self.dfs_recursive(neighbor, visited)
+
 
     def bfs(self, s):
         visited = set()
@@ -43,6 +41,6 @@ for _ in range(size):
 
 start = int(input("Enter the starting vertex: "))
 print("DFS of Graph:")
-g.dfs(start)
+g.dfs_recursive(start)
 print("\nBFS of Graph:")
 g.bfs(start)
