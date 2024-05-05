@@ -37,7 +37,7 @@ def solve_8_puzzle(initial_state):
                 heapq.heappush(frontier, (manhattan_distance(next_state) + cost + 1, next_state, cost + 1))
     return None
 
-initial_state = [8,3,5,4,1,6,2,7,0]
+initial_state = [1,3,4,8,6,2,7,0,5]
 print("Initial state:")
 print_puzzle(initial_state)
 solution_cost = solve_8_puzzle(initial_state)

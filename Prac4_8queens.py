@@ -17,7 +17,7 @@ class NQueens:
         if row == self.n:
             self.print_solution()
             self.solution_count += 1
-            return True
+          
 
         for col in range(self.n):
             if self.is_safe(row, col):
@@ -27,18 +27,21 @@ class NQueens:
                 self.board[row] = -1
         return False
 
-    def solved_branch_and_bound(self, row):
+    def solved_branch_and_bound(self, row, queens_left=None):
         if row == self.n:
             self.print_solution()
             self.solution_count += 1
-            return True
+            
 
-        for col in range(self.n):
+        queens_left = queens_left or set(range(self.n))
+
+        for col in queens_left:
             if self.is_safe(row, col):
                 self.board[row] = col
-                if self.solved_branch_and_bound(row + 1):
-                    return True
+                if self.solved_branch_and_bound(row + 1, queens_left - {col}):
+                 return True
                 self.board[row] = -1
+
         return False
 
     def print_solution(self):
@@ -56,7 +59,7 @@ class NQueens:
 
 
 if __name__ == "__main__":
-    n_queen_solver = NQueens(4)  # Solve for 8 queens
+    n_queen_solver = NQueens(8)  # Solve for 8 queens
 
     print("Solutions using Backtracking:")
     n_queen_solver.find_solutions_backtracking()
