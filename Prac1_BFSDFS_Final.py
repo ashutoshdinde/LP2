@@ -1,5 +1,4 @@
 from collections import deque
-
 class Graph:
     def __init__(self, v):
         self.adj = [[] for _ in range(v)]
@@ -15,17 +14,18 @@ class Graph:
             if neighbor not in visited:
                 self.dfs_recursive(neighbor, visited)
 
+    def bfs_recursive(self, queue, visited=set()):
+        
+        if not queue:
+            return
 
-    def bfs(self, s):
-        visited = set()
-        queue = deque([s])
+        s = queue.popleft()
+        if s not in visited:
+            print(s, end=" ")
+            visited.add(s)
+            queue.extend(self.adj[s])
+        self.bfs_recursive(queue, visited)
 
-        while queue:
-            s = queue.popleft()
-            if s not in visited:
-                print(s, end=" ")
-                visited.add(s)
-                queue.extend(self.adj[s])
 
 n = int(input("Enter the size of the graph: "))
 g = Graph(n)
@@ -43,4 +43,4 @@ start = int(input("Enter the starting vertex: "))
 print("DFS of Graph:")
 g.dfs_recursive(start)
 print("\nBFS of Graph:")
-g.bfs(start)
+g.bfs_recursive(deque([start]))
