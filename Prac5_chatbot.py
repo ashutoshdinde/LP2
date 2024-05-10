@@ -70,14 +70,7 @@ def respond(input: str):
         values = knowledge_base[input]
         for value in values:
             st.write(value)
-    else:
-        print(input)
-        key = input
-        st.write("Question is not present in the knowledge base!\nCould you please enter the appropriate answer for the question below-")
-        answer = st.text_input("Answer")
-        add = st.button("Add answer")
-        if (add):
-            knowledge_base[key] = [answer]
+    
 
 if __name__ == "__main__":
     input = st.text_input("Enter a query here-")
